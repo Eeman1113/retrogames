@@ -1,0 +1,6 @@
+tool,purpose,note
+RetroArch,Multi-system frontend,The libretro host every core listed here plugs into
+mGBA / SameBoy,Accuracy-first GB/GBA cores,Use over gpSP/VBA when timing-sensitive games glitch
+Mesen / Nestopia UE,Cycle-accurate NES/Famicom,"Mesen for debugging, Nestopia UE for low-overhead play"
+bsnes / Snes9x,SNES accuracy vs speed,"bsnes for coprocessor carts, Snes9x when CPU is tight"
+ScummVM,Point-and-click engine host,"Not an emulator: reimplements the engines, so it runs ports natively"

@@ -1,0 +1,42 @@
+id,system,maker,category,launch,gen,units_m,media,cpu_bits,library_size,note
+nes,NES,Nintendo,Console,1983,3,61.91,Cartridge,8,~1400,Western branding of the Famicom (US 1985); 61.91M is the combined NES/Famicom figure
+famicom,Famicom,Nintendo,Console,1983,3,61.91,Cartridge,8,~1050,Same hardware as NES; ~300 titles never left Japan
+snes,Super Nintendo,Nintendo,Console,1990,4,49.10,Cartridge,16,~1750,US launch 1991; Mode 7 + S-SMP audio defined the 16-bit look and sound
+sfc,Super Famicom,Nintendo,Console,1990,4,49.10,Cartridge,16,~1450,JP library is ~2x the US RPG count
+n64,Nintendo 64,Nintendo,Console,1996,5,32.93,Cartridge,64,~390,Smallest library of its gen; analog stick + 4 controller ports
+gb,Game Boy,Nintendo,Handheld,1989,4,64.42,Cartridge,8,~1050,118.69M is GB+GBC combined; split here by common estimate
+gbc,Game Boy Color,Nintendo,Handheld,1998,5,54.27,Cartridge,8,~580,Backwards compatible; 118.69M GB+GBC combined
+gba,Game Boy Advance,Nintendo,Handheld,2001,6,81.51,Cartridge,32,~1500,32-bit ARM7 handheld; the 2D craft endpoint
+vb,Virtual Boy,Nintendo,Console,1995,5,0.77,Cartridge,32,22,"Commercial failure; 22 games total, 14 in the West"
+pkmn_mini,Pokemon Mini,Nintendo,Handheld,2001,6,0.00,Cartridge,8,10,Smallest cartridge console ever made; exactly 10 games
+gw,Game & Watch,Nintendo,Handheld,1980,1,43.40,Built-in,4,60,One game per unit; invented the D-pad
+md,Mega Drive / Genesis,Sega,Console,1988,4,34.06,Cartridge,16,~900,68000 + YM2612 FM; Sega's only real win vs Nintendo
+sms,Master System,Sega,Console,1985,3,13.00,Cartridge,8,~320,"Dominant in Brazil and PAL Europe, not the US"
+gg,Game Gear,Sega,Handheld,1990,4,14.00,Cartridge,8,~370,Backlit colour handheld; 6 hours on 6 AAs
+sg1000,SG-1000,Sega,Console,1983,2,2.00,Cartridge,8,~70,Launched the same day as the Famicom and lost instantly
+segacd,Sega CD,Sega,Add-on,1991,4,2.24,CD-ROM,16,~210,CD audio + scaling/rotation ASIC; FMV era epicentre
+pce,PC Engine / TurboGrafx-16,NEC,Console,1987,4,10.00,HuCard,8,~320,"8-bit CPU, 16-bit video; #1 in Japan in 1988"
+pcecd,PC Engine CD,NEC,Add-on,1988,4,10.00,CD-ROM,8,~450,First CD-ROM games console add-on anywhere
+sgfx,SuperGrafx,NEC,Console,1989,4,0.06,HuCard,8,7,5 dedicated games + 2 hybrids. That is the whole library
+ps1,PlayStation,Sony,Console,1994,5,102.49,CD-ROM,32,~4100,First console past 100M; killed the cartridge
+psp,PlayStation Portable,Sony,Handheld,2004,7,82.50,UMD,32,~1900,Console-class 3D in a handheld
+cps1,Capcom CPS-1,Capcom,Arcade,1988,4,,Board,16,~35,The Street Fighter II board
+cps2,Capcom CPS-2,Capcom,Arcade,1993,5,,Board,16,~45,"Encrypted ""suicide battery"" board; peak 2D Capcom"
+cps3,Capcom CPS-3,Capcom,Arcade,1996,5,,Board,32,6,Exactly 6 games; highest-resolution 2D sprite work of the era
+neogeo,Neo Geo,SNK,Arcade,1990,4,0.41,Cartridge,16,~150,Identical arcade and home hardware; 14-year lifespan
+mame,MAME 2003-Plus,Various,Arcade,1975,2,,Board,8,~4000,Curated set of the golden-age coin-op canon
+ngp,Neo Geo Pocket,SNK,Handheld,1998,5,2.00,Cartridge,16,10,Mono model; microswitched clicky stick
+ngpc,Neo Geo Pocket Color,SNK,Handheld,1999,5,2.00,Cartridge,16,~85,Best fighting-game handheld ever built
+ws,WonderSwan,Bandai,Handheld,1999,5,3.50,Cartridge,16,~100,Gunpei Yokoi's last design; 40 hours on one AA
+wsc,WonderSwan Color,Bandai,Handheld,2000,5,3.50,Cartridge,16,~90,Square's handheld home before the GBA deal
+lynx,Atari Lynx,Atari,Handheld,1989,4,2.00,Cartridge,8,~75,First colour backlit handheld; hardware sprite scaling
+a2600,Atari 2600,Atari,Console,1977,2,30.00,Cartridge,8,~500,Created the third-party software industry
+a7800,Atari 7800,Atari,Console,1986,3,1.00,Cartridge,8,~60,MARIA chip; arcade ports but a thin library
+o2,Odyssey 2 / Videopac,Magnavox,Console,1978,2,2.00,Cartridge,8,~75,Built-in keyboard; board-game/videogame hybrids
+intv,Intellivision,Mattel,Console,1979,2,3.50,Cartridge,16,~125,16-bit CPU in 1979; disc controller and overlays
+coleco,ColecoVision,Coleco,Console,1982,2,6.00,Cartridge,8,~145,Arcade-accurate ports were the entire pitch
+msx,MSX,Microsoft/ASCII,Computer,1983,3,5.00,Cartridge/Tape,8,~1200,"A standard, not a machine; Konami's lab"
+msx2,MSX2,Microsoft/ASCII,Computer,1985,3,3.00,Cartridge/Disk,8,~900,V9938 VDP; where Kojima learned to direct
+zx,ZX Spectrum,Sinclair,Computer,1982,2,5.00,Tape,8,~24000,Colour clash and the UK bedroom-coder industry
+cpc,Amstrad CPC,Amstrad,Computer,1984,3,3.00,Tape/Disk,8,~6000,"Better palette than the Spectrum, worse scrolling"
+ports,Ports,Open source,Ports,1993,5,,Source port,32,~40,Not emulation: native rebuilds of released engines from source
