@@ -111,11 +111,14 @@ gbc|2|The Legend of Zelda: Oracle of Seasons / Ages|2001|Action-adventure|Flagsh
 gbc|3|Metal Gear: Ghost Babel|2000|Stealth|Konami|exclusive||91|A full top-down MGS with codec drama and VR missions, built in 8-bit
 gbc|4|Wario Land 3|2000|Platformer|Nintendo R&D1|exclusive|2.33|90|An invincible protagonist turns a platformer into a lock-and-key puzzle box
 gbc|5|Shantae|2002|Platformer|WayForward|exclusive||87|Released after the GBA launched; the most technically absurd GBC game ever
-gba|1|Metroid: Zero Mission|2004|Metroidvania|Nintendo R&D1|exclusive|1.07|95|A remake that out-designs the original and adds a stealth third act
+gba|1|Metroid Fusion|2002|Metroidvania|Nintendo R&D1|exclusive|1.26|95|An original Metroid built for the hardware, with the SA-X turning exploration into a hunt
 gba|2|Castlevania: Aria of Sorrow|2003|Metroidvania|Konami|exclusive|0.16|94|The soul-collection system; the best-balanced Igavania
 gba|3|Mother 3|2006|RPG|Brownie Brown / HAL|regional|0.40|93|A rhythm combo system wrapped around the saddest script Nintendo ever shipped
 gba|4|Advance Wars|2001|Tactical|Intelligent Systems|exclusive|0.90|92|Perfect-information turn-based war with zero randomness
 gba|5|WarioWare, Inc.: Mega Microgame$!|2003|Minigame|Nintendo R&D1|exclusive|1.08|91|200 five-second games; invented the microgame as a form
+# GBA honourable mentions, cut on the uniqueness rule rather than on quality:
+# Metroid: Zero Mission (a remake of a 1986 NES game), The Minish Cap, Golden Sun,
+# Mario & Luigi: Superstar Saga, Wario Land 4, Final Fantasy Tactics Advance.
 vb|1|Virtual Boy Wario Land|1995|Platformer|Nintendo R&D1|exclusive||88|Uses the parallax layers as actual level geometry you move between
 vb|2|Jack Bros.|1995|Action|Atlus|exclusive||80|The first Megami Tensei game released in the West, on the worst possible console
 vb|3|Teleroboxer|1995|Fighting|Nintendo R&D1|exclusive||74|First-person boxing where the stereoscopy genuinely helps you read punches
@@ -294,7 +297,8 @@ ScummVM|Point-and-click engine host|Not an emulator: reimplements the engines, s
 
 
 def parse(block):
-    lines = [l for l in block.strip().splitlines() if l.strip()]
+    lines = [l for l in block.strip().splitlines()
+             if l.strip() and not l.lstrip().startswith("#")]
     head = lines[0].split("|")
     rows = []
     for i, l in enumerate(lines[1:], start=2):

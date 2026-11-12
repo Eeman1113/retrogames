@@ -424,12 +424,19 @@ try:
     print(f"adj. R2 = {m.rsquared_adj:.3f} · F p = {m.f_pvalue:.3g}")
     reg["resid"] = m.resid
     reg["fitted"] = m.fittedvalues
+    beta = m.params
 except ImportError:
     A = np.c_[np.ones(len(x)), x, reg["log_lib"].values]
     beta, *_ = np.linalg.lstsq(A, yv, rcond=None)
     reg["fitted"] = A @ beta; reg["resid"] = yv - reg["fitted"]
     print("\n(statsmodels unavailable - fell back to numpy least squares)",
           "\ncoefs [const, log_units, log_lib] =", np.round(beta, 3))
+
+ss_res = float((reg.resid ** 2).sum())
+ss_tot = float(((reg.mean_canon - reg.mean_canon.mean()) ** 2).sum())
+adj_r2 = 1 - (ss_res / (len(reg) - 3)) / (ss_tot / (len(reg) - 1))
+coef_units, coef_lib = float(beta[1]), float(beta[2])
+print(f"\nadjusted R2 = {adj_r2:.3f} · coefficients: units {coef_units:+.2f}, library {coef_lib:+.2f}")
 """)
 
 co(r"""
@@ -869,120 +876,129 @@ print("wrote:", *sorted(os.listdir(out)), sep="\n  ")
 """)
 
 # ================================================ 11. findings ==============
-md(r"""
-## 11 · Findings
+md("## 11 · Findings")
+co(r"""
+# The findings below are ASSEMBLED FROM THE EXECUTED RESULTS, not typed in.
+# An earlier draft of this notebook hard-coded its conclusions and three of them
+# contradicted the cells above once the data changed. Interpolating every volatile
+# number makes that failure mode impossible: edit a pick in build_dataset.py, re-run,
+# and the prose moves with the data.
+from IPython.display import Markdown, display
 
-Every number below is read off the executed cells above, not asserted ahead of them.
+catmed = df.groupby("category")["lag"].median()
+top_r, bot_r = reg.nlargest(3, "resid"), reg.nsmallest(3, "resid")
+miss = df.groupby("exclusive")["has_sales"].mean().mul(100)
+csize = feat.cluster.value_counts().sort_index()
+pct = lambda v: f"{v:.1f}%"
 
-**1 · The canon is back-loaded, but handhelds are the exception.** Median lag is
-**3 years** after launch (mean 3.11, 95% CI [2.77, 3.46]); 54% of picks land in
-year 3 or later and Wilcoxon rejects a median of ≤2 years (p = 4.3e-08). The split
-by category is sharp (Kruskal–Wallis H = 28.8, p = 8.6e-06): **arcade boards
-median 4 years, consoles 3, handhelds 1.** Handheld canons are front-loaded
-because handheld *lives* are short and the defining title is often the pack-in —
-*Tetris*, *California Games*, *Astrosmash*. Long-lived cartridge consoles get the
-opposite: *Kirby's Adventure* arrives in the NES's tenth year, *Shantae* ships on
-the Game Boy Color after the GBA is already out.
+display(Markdown(f'''
+**1 · The canon is back-loaded — but handhelds invert it.** Median lag is
+**{lag.median():.0f} years** after launch (mean {lag.mean():.2f}, 95% bootstrap CI
+[{np.percentile(bs,2.5):.2f}, {np.percentile(bs,97.5):.2f}]); {pct(100*(lag>=3).mean())} of
+picks land in year 3 or later, and Wilcoxon rejects a median of ≤2 years
+(p = {w.pvalue:.2g}). The split by category is sharp (Kruskal–Wallis
+H = {kw.statistic:.1f}, p = {kw.pvalue:.2g}): **arcade boards median
+{catmed.get('Arcade', float('nan')):.0f} years, consoles {catmed.get('Console', float('nan')):.0f},
+handhelds {catmed.get('Handheld', float('nan')):.0f}.** Handheld canons are front-loaded because
+handheld *lives* are short and the defining title is often the pack-in — *Tetris*,
+*California Games*, *Astrosmash*. Long-lived cartridge consoles do the opposite:
+*Kirby's Adventure* arrives in the NES's tenth year, *Shantae* ships on the Game Boy
+Color after the GBA is already out.
 
-**2 · "Later games are better" is a Simpson's paradox, and this is the
-notebook's sharpest result.** Pooled across all 205 picks, ρ(lag, canon) = **+0.348**
-(permutation p < 0.0002) — which looks like strong support for the folk theory.
+**2 · "Later games are better" is a Simpson's paradox — the sharpest result here.**
+Pooled across all {len(df)} picks, ρ(lag, canon) = **{r_s:+.3f}** (permutation
+p < {max(p_perm, 1/5000):.4f}), which looks like strong support for the folk theory.
 Decompose it and it dissolves:
 
 | view | ρ | p | n |
 |---|---|---|---|
-| pooled | **+0.348** | <0.0002 | 205 |
-| **within** platform (both vars centred on their system's mean) | **−0.088** | 0.21 | 205 |
-| **between** platforms (one row per system) | **+0.521** | 0.0005 | 41 |
+| pooled | **{r_s:+.3f}** | {p_s:.2g} | {len(df)} |
+| **within** platform (both vars centred on their system's mean) | **{rw_:+.3f}** | {pw_:.2f} | {len(w_)} |
+| **between** platforms (one row per system) | **{rb_:+.3f}** | {pb_:.2g} | {len(bt)} |
 
-Inside any one platform, a later release is *not* a better-regarded one. The
-pooled correlation is entirely a between-platform effect: platforms whose canon
-arrives late are long-lived successful platforms, which also have higher-scoring
-canons. The rank-only check agrees — ρ(within-system rank, lag) = +0.055, p = 0.43.
-Anyone who ran only the pooled correlation would have published the wrong
-mechanism.
+Inside any one platform a later release is *not* a better-regarded one. The pooled
+correlation is entirely a between-platform effect: platforms whose canon arrives late
+are long-lived successful platforms, which also have higher-scoring canons. The
+rank-only check agrees — ρ(within-system rank, lag) =
+{stats.spearmanr(df['rank'], df['lag'])[0]:+.3f},
+p = {stats.spearmanr(df['rank'], df['lag'])[1]:.2f}. Anyone who ran only the pooled
+correlation would have published the wrong mechanism.
 
-**3 · Commercial scale does track library quality — and library *size* matters
-more than install base.** r(log units, mean canon) = **+0.668**, R² = 0.446; adding
-log library size lifts adjusted R² to **0.568**, with both coefficients
-significant (**+5.14** canon points per decade of library size, p = 0.002;
-**+3.49** per decade of install base, p = 0.026). Note which one wins: how many
-games got made beats how many boxes shipped. The residuals name the exceptions:
+**3 · Commercial scale tracks library quality — and library *size* beats install
+base.** r(log units, mean canon) = **{r:+.3f}**, R² = {r**2:.3f}; adding log library
+size lifts adjusted R² to **{adj_r2:.3f}**, with the library coefficient
+(**{coef_lib:+.2f}** canon points per decade of titles) larger than the install-base
+coefficient (**{coef_units:+.2f}** per decade of units). How many games got made beats
+how many boxes shipped. The residuals name the exceptions:
 
-- **Over-performers** — Neo Geo **+14.6** (410k units, 150 games, a canon of 95),
-  Neo Geo Pocket Color +7.1, Nintendo 64 +7.1, Sega CD +5.7, PC Engine CD +5.3.
+- **Over-performers** — {", ".join(f"{r_['name']} **{r_.resid:+.1f}**" for _, r_ in top_r.iterrows())}.
   The pattern is one committed studio plus a hardware quirk worth exploiting.
-- **Under-performers** — SG-1000 **−15.9**, Odyssey 2 −6.4, Amstrad CPC −6.2
-  (6,000 titles and a thin ceiling: volume is not depth), PSP −4.3, Game Gear −3.9.
+- **Under-performers** — {", ".join(f"{r_['name']} **{r_.resid:+.1f}**" for _, r_ in bot_r.iterrows())}.
 
-**4 · The curation is not a sales ranking, but I cannot fully clear it either.**
-Only **46 of 205** picks (22%) have any published sales figure. Among those,
-ρ(log sales, canon) = **+0.485**, bootstrap 95% CI [+0.216, +0.679] — moderate,
-not decisive. The missingness is strongly structured (availability × missingness
-p = 2.5e-04): a figure exists for 33.6% of platform exclusives, 14.8% of
-multi-platform titles, **2.6%** of region-locked titles and **0%** of arcade-only
-ones. And picks without a figure score **9.8 points lower** on average
-(Mann–Whitney p = 2.8e-13, Cliff's δ = +0.707). Two readings fit that, and the
-data cannot separate them: either obscure games really are a notch weaker, or a
-curator scores what is better documented more generously. This is textbook MNAR —
-and any version of this analysis that silently dropped the 159 missing rows would
-have manufactured a popularity bias that is not in the underlying judgement.
+**4 · The curation is not a sales ranking, but it cannot be fully cleared either.**
+Only **{df.has_sales.sum()} of {len(df)}** picks ({pct(100*df.has_sales.mean())}) have any
+published sales figure. Among those, ρ(log sales, canon) = **{rs:+.3f}**, bootstrap 95% CI
+[{np.percentile(bsr,2.5):+.3f}, {np.percentile(bsr,97.5):+.3f}] — moderate, not decisive.
+The missingness is strongly structured (availability × missingness
+p = {stats.chi2_contingency(pd.crosstab(df.exclusive, df.has_sales)).pvalue:.2g}): a figure exists for
+{pct(miss.get('exclusive', 0))} of platform exclusives, {pct(miss.get('multi', 0))} of multi-platform
+titles, **{pct(miss.get('regional', 0))}** of region-locked titles and **{pct(miss.get('arcade-only', 0))}**
+of arcade-only ones. And picks without a figure score **{abs(d):.1f} points** lower on average
+(Mann–Whitney p = {u.pvalue:.2g}, Cliff's δ = {cliff:+.3f}). Two readings fit that and the data
+cannot separate them: either obscure games really are a notch weaker, or a curator scores
+what is better documented more generously. This is textbook MNAR — any version of this
+analysis that silently dropped the {int((~df.has_sales).sum())} missing rows would have
+manufactured a popularity bias that is not in the underlying judgement.
 
-**5 · The canon is a steep head on a long tail — not an oligopoly.** 66 distinct
-developers; **HHI = 468**, which is *unconcentrated* by the usual 1500/2500 bands.
-But Gini = **0.548**, the top five studios (Nintendo internal 23, Capcom 21,
-Konami 16, Sega 14, SNK 13) hold **42.4%** of all picks, and **59% of developers
-appear exactly once**. Both facts are true at once, and the HHI is the one that
-would mislead if quoted alone. Konami is the standout for *range* rather than
-count: top-ranked picks on 8-bit home computers (MSX, MSX2), a CD add-on
-(*Rondo of Blood*) and a 32-bit disc console (*Metal Gear Solid*).
+**5 · A steep head on a long tail — not an oligopoly.** {len(dc)} distinct developers;
+**HHI = {hhi:.0f}**, which is *unconcentrated* by the usual 1500/2500 bands. But Gini =
+**{gini:.3f}**, the top five studios ({", ".join(f"{k} {v}" for k, v in dc.head(5).items())}) hold
+**{pct(100*share.head(5).sum())}** of all picks, and **{pct(100*(dc==1).mean())}** of developers
+appear exactly once. Both are true at once, and the HHI is the one that would mislead if
+quoted alone. Konami stands out for *range* rather than count: top-ranked picks on 8-bit
+home computers (MSX, MSX2), a CD add-on (*Rondo of Blood*) and a 32-bit disc console
+(*Metal Gear Solid*).
 
-**6 · Exclusivity is a property of the business model, not the era.** 73.7% of the
-canon was locked to its platform at release, but the breakdown is categorical:
-add-ons 100%, handhelds 93%, consoles 85%, home computers 55%, arcade boards 8%.
+**6 · Exclusivity is a property of the business model, not the era.**
+{pct(100*df.is_excl.mean())} of the canon was locked to its platform at release, but the
+breakdown is categorical: {" · ".join(f"{k} {v:.0f}%" for k, v in df.groupby("category")["is_excl"].mean().mul(100).sort_values(ascending=False).items())}.
 Arcade hardware existed to be converted; handhelds existed to be moats.
 
-**7 · Hardware features alone recover recognisable archetypes.** PCA on six
-uncurated platform features puts **70.9%** of variance in two components. PC1 is a
-size-and-depth composite (units, library, canon and lag all load together); PC2
-separates **exclusivity and launch era**. k = 3 is the best of k ∈ {2,3,4,5} by
-silhouette (0.310 — weak-to-moderate, so treat the boundaries as soft) and the
-groups are nameable without reference to any score: 18 mass-market platforms
-(median 46M units, 97% exclusive), 12 small-install-base niches (median 2M, 90%
-exclusive), and 5 members of the **open / cross-published era** — Atari 2600,
-ColecoVision, Amstrad CPC, ZX Spectrum and, revealingly, the **Neo Geo**, whose
-exclusivity rate of 0.12 puts it with the home computers rather than with the
-consoles.
+**7 · Hardware features alone recover recognisable archetypes.** PCA on six uncurated
+platform features puts **{evr[:2].sum():.1%}** of variance in two components. PC1 is a
+size-and-depth composite (units, library, canon and lag load together); PC2 separates
+**exclusivity and launch era**. k = 3 wins on silhouette ({silhouette_score(Xz, lab):.3f} —
+weak-to-moderate, so treat the boundaries as soft), and the groups are nameable without
+reference to any score: {", ".join(f"{csize[k]} × {NAMES[k].lower()}" for k in sorted(NAMES))}.
+The Neo Geo is the tell — its exclusivity rate puts it with the home computers rather than
+with the consoles, because its canon reached homes as arcade conversions.
 
-**8 · The results survive curator noise.** Under ±5 points of simulated
-disagreement per game — roughly what two reasonable curators would differ by — the
-headline relationship holds its sign in **100%** of 2,000 draws, r ∈ [+0.575,
-+0.712]. The rank-only collapse reproduces the *null* within-platform lag result.
-What would not survive is any claim resting on a 2–3 point gap between two
-individual games, so none is made here.
+**8 · The results survive curator noise.** Under ±5 points of simulated disagreement per
+game, the headline relationship holds its sign in **{100*(np.sign(sims)==np.sign(base_r)).mean():.0f}%**
+of {len(sims):,} draws, r ∈ [{np.percentile(sims,2.5):+.3f}, {np.percentile(sims,97.5):+.3f}].
+The rank-only collapse reproduces the *null* within-platform lag result. What would not
+survive is any claim resting on a 2–3 point gap between two individual games, so none is
+made here.
 
 ### What this notebook does not establish
 
-- **`canon_score` is one person's rubric.** Reproducible ≠ independent. The
-  honest next step is pulling per-title score distributions (Metacritic, GameFAQs,
-  Backloggd, Glitchwave) and modelling inter-rater disagreement as a variance
-  component instead of assuming it away at ±5 points.
+- **`canon_score` is one person's rubric.** Reproducible ≠ independent. The honest next
+  step is pulling per-title score distributions (Metacritic, GameFAQs, Backloggd,
+  Glitchwave) and modelling inter-rater disagreement as a variance component instead of
+  assuming it away at ±5 points.
 - **Two install-base figures are estimates, not measurements.** Nintendo reports
-  NES+Famicom as one number (61.91M) and Game Boy+Game Boy Color as one number
-  (118.69M); the 64.42M / 54.27M split used here is a common estimate. Those rows
-  carry more uncertainty than their error-free presentation implies, and both sit
-  in the regression.
-- **n = 41 platforms.** The OLS and the clustering are descriptive at that size.
-  Treat coefficients as directional; do not quote them as estimates.
-- **Selection on the dependent variable, by construction.** These are the top 5
-  *per system*. Nothing here can speak to the average game on a platform — only to
-  its ceiling. The SG-1000's −15.9 residual says its ceiling is low, which is a
-  much stronger claim than saying its library is bad, and it is the only kind of
-  claim this design supports.
-- **"Ports" is not a platform.** It is given a nominal 1993 launch so it joins the
-  same schema; its lag values are schema-compatible and semantically meaningless.
-"""
-)
+  NES+Famicom as one number (61.91M) and Game Boy+Game Boy Color as another (118.69M); the
+  64.42M / 54.27M split used here is a common estimate. Both rows sit in the regression.
+- **n = {len(reg)} platforms in the model.** The OLS and the clustering are descriptive at
+  that size. Treat coefficients as directional; do not quote them as estimates.
+- **Selection on the dependent variable, by construction.** These are the top 5 *per
+  system*, so nothing here describes the average game on a platform — only its ceiling.
+  {bot_r.iloc[0]['name']}'s {bot_r.iloc[0].resid:+.1f} says its ceiling is low, which is a
+  much stronger claim than saying its library is bad, and the only kind this design supports.
+- **"Ports" is not a platform.** It is given a nominal 1993 launch so it joins the same
+  schema; its lag values are schema-compatible and semantically meaningless.
+'''))
+""")
 
 nb["cells"] = C
 nb.metadata.update({

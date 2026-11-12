@@ -1,0 +1,627 @@
+{
+ "counts": {
+  "systems": 41,
+  "games": 205,
+  "developers": 66,
+  "makers": 16,
+  "years": [
+   1980,
+   2010
+  ],
+  "exclusive_pct": 73.7,
+  "sales_known_pct": 22,
+  "median_lag": 3,
+  "adj_r2": 0.568,
+  "r_simple": 0.668,
+  "gini": 0.548,
+  "coef_units": 3.49,
+  "coef_lib": 5.14
+ },
+ "paradox": [
+  {
+   "k": "pooled",
+   "label": "All 205 picks together",
+   "rho": 0.342,
+   "p": 5.096906572871782e-07,
+   "n": 205,
+   "note": "Looks like proof that later games are better."
+  },
+  {
+   "k": "within",
+   "label": "Within one platform",
+   "rho": -0.094,
+   "p": 0.17970293351815933,
+   "n": 205,
+   "note": "Centre both columns on each system's own mean and it vanishes."
+  },
+  {
+   "k": "between",
+   "label": "Between platforms",
+   "rho": 0.513,
+   "p": 0.0006117006277479439,
+   "n": 41,
+   "note": "The real effect: long-lived platforms have stronger canons."
+  }
+ ],
+ "lag_by_cat": [
+  {
+   "cat": "Add-on",
+   "median": 3.0,
+   "n": 10
+  },
+  {
+   "cat": "Arcade",
+   "median": 4.0,
+   "n": 25
+  },
+  {
+   "cat": "Computer",
+   "median": 3.5,
+   "n": 20
+  },
+  {
+   "cat": "Console",
+   "median": 3.0,
+   "n": 85
+  },
+  {
+   "cat": "Handheld",
+   "median": 1.0,
+   "n": 60
+  },
+  {
+   "cat": "Ports",
+   "median": 3.0,
+   "n": 5
+  }
+ ],
+ "lag_hist": [
+  {
+   "lag": 0,
+   "n": 37
+  },
+  {
+   "lag": 1,
+   "n": 28
+  },
+  {
+   "lag": 2,
+   "n": 30
+  },
+  {
+   "lag": 3,
+   "n": 30
+  },
+  {
+   "lag": 4,
+   "n": 27
+  },
+  {
+   "lag": 5,
+   "n": 21
+  },
+  {
+   "lag": 6,
+   "n": 12
+  },
+  {
+   "lag": 7,
+   "n": 6
+  },
+  {
+   "lag": 8,
+   "n": 3
+  },
+  {
+   "lag": 9,
+   "n": 6
+  },
+  {
+   "lag": 10,
+   "n": 3
+  },
+  {
+   "lag": 11,
+   "n": 2
+  }
+ ],
+ "scatter": [
+  {
+   "name": "Atari 2600",
+   "cat": "Console",
+   "units": 30.0,
+   "canon": 91.6,
+   "lib": 500
+  },
+  {
+   "name": "Atari 7800",
+   "cat": "Console",
+   "units": 1.0,
+   "canon": 79.2,
+   "lib": 60
+  },
+  {
+   "name": "ColecoVision",
+   "cat": "Console",
+   "units": 6.0,
+   "canon": 84.0,
+   "lib": 145
+  },
+  {
+   "name": "Amstrad CPC",
+   "cat": "Computer",
+   "units": 3.0,
+   "canon": 85.4,
+   "lib": 6000
+  },
+  {
+   "name": "Famicom",
+   "cat": "Console",
+   "units": 61.91,
+   "canon": 89.8,
+   "lib": 1050
+  },
+  {
+   "name": "Game Boy",
+   "cat": "Handheld",
+   "units": 64.42,
+   "canon": 94.2,
+   "lib": 1050
+  },
+  {
+   "name": "Game Boy Advance",
+   "cat": "Handheld",
+   "units": 81.51,
+   "canon": 93.0,
+   "lib": 1500
+  },
+  {
+   "name": "Game Boy Color",
+   "cat": "Handheld",
+   "units": 54.27,
+   "canon": 91.8,
+   "lib": 580
+  },
+  {
+   "name": "Game Gear",
+   "cat": "Handheld",
+   "units": 14.0,
+   "canon": 83.8,
+   "lib": 370
+  },
+  {
+   "name": "Game & Watch",
+   "cat": "Handheld",
+   "units": 43.4,
+   "canon": 84.6,
+   "lib": 60
+  },
+  {
+   "name": "Intellivision",
+   "cat": "Console",
+   "units": 3.5,
+   "canon": 82.4,
+   "lib": 125
+  },
+  {
+   "name": "Atari Lynx",
+   "cat": "Handheld",
+   "units": 2.0,
+   "canon": 79.0,
+   "lib": 75
+  },
+  {
+   "name": "Mega Drive / Genesis",
+   "cat": "Console",
+   "units": 34.06,
+   "canon": 93.4,
+   "lib": 900
+  },
+  {
+   "name": "MSX",
+   "cat": "Computer",
+   "units": 5.0,
+   "canon": 88.2,
+   "lib": 1200
+  },
+  {
+   "name": "MSX2",
+   "cat": "Computer",
+   "units": 3.0,
+   "canon": 88.6,
+   "lib": 900
+  },
+  {
+   "name": "Nintendo 64",
+   "cat": "Console",
+   "units": 32.93,
+   "canon": 96.2,
+   "lib": 390
+  },
+  {
+   "name": "Neo Geo",
+   "cat": "Arcade",
+   "units": 0.41,
+   "canon": 95.0,
+   "lib": 150
+  },
+  {
+   "name": "NES",
+   "cat": "Console",
+   "units": 61.91,
+   "canon": 94.6,
+   "lib": 1400
+  },
+  {
+   "name": "Neo Geo Pocket",
+   "cat": "Handheld",
+   "units": 2.0,
+   "canon": 73.6,
+   "lib": 10
+  },
+  {
+   "name": "Neo Geo Pocket Color",
+   "cat": "Handheld",
+   "units": 2.0,
+   "canon": 88.6,
+   "lib": 85
+  },
+  {
+   "name": "Odyssey 2 / Videopac",
+   "cat": "Console",
+   "units": 2.0,
+   "canon": 74.8,
+   "lib": 75
+  },
+  {
+   "name": "PC Engine / TurboGrafx-16",
+   "cat": "Console",
+   "units": 10.0,
+   "canon": 89.8,
+   "lib": 320
+  },
+  {
+   "name": "PC Engine CD",
+   "cat": "Add-on",
+   "units": 10.0,
+   "canon": 93.0,
+   "lib": 450
+  },
+  {
+   "name": "PlayStation",
+   "cat": "Console",
+   "units": 102.49,
+   "canon": 97.0,
+   "lib": 4100
+  },
+  {
+   "name": "PlayStation Portable",
+   "cat": "Handheld",
+   "units": 82.5,
+   "canon": 89.8,
+   "lib": 1900
+  },
+  {
+   "name": "Sega CD",
+   "cat": "Add-on",
+   "units": 2.24,
+   "canon": 89.4,
+   "lib": 210
+  },
+  {
+   "name": "Super Famicom",
+   "cat": "Console",
+   "units": 49.1,
+   "canon": 88.8,
+   "lib": 1450
+  },
+  {
+   "name": "SG-1000",
+   "cat": "Console",
+   "units": 2.0,
+   "canon": 65.2,
+   "lib": 70
+  },
+  {
+   "name": "SuperGrafx",
+   "cat": "Console",
+   "units": 0.06,
+   "canon": 70.4,
+   "lib": 7
+  },
+  {
+   "name": "Master System",
+   "cat": "Console",
+   "units": 13.0,
+   "canon": 87.8,
+   "lib": 320
+  },
+  {
+   "name": "Super Nintendo",
+   "cat": "Console",
+   "units": 49.1,
+   "canon": 97.0,
+   "lib": 1750
+  },
+  {
+   "name": "Virtual Boy",
+   "cat": "Console",
+   "units": 0.77,
+   "canon": 76.4,
+   "lib": 22
+  },
+  {
+   "name": "WonderSwan",
+   "cat": "Handheld",
+   "units": 3.5,
+   "canon": 79.2,
+   "lib": 100
+  },
+  {
+   "name": "WonderSwan Color",
+   "cat": "Handheld",
+   "units": 3.5,
+   "canon": 84.6,
+   "lib": 90
+  },
+  {
+   "name": "ZX Spectrum",
+   "cat": "Computer",
+   "units": 5.0,
+   "canon": 91.6,
+   "lib": 24000
+  }
+ ],
+ "residuals": [
+  {
+   "name": "Neo Geo",
+   "resid": 14.6,
+   "units": 0.41,
+   "canon": 95.0
+  },
+  {
+   "name": "Neo Geo Pocket Color",
+   "resid": 7.1,
+   "units": 2.0,
+   "canon": 88.6
+  },
+  {
+   "name": "Nintendo 64",
+   "resid": 7.1,
+   "units": 32.93,
+   "canon": 96.2
+  },
+  {
+   "name": "Sega CD",
+   "resid": 5.7,
+   "units": 2.24,
+   "canon": 89.4
+  },
+  {
+   "name": "PC Engine CD",
+   "resid": 5.3,
+   "units": 10.0,
+   "canon": 93.0
+  },
+  {
+   "name": "SG-1000",
+   "resid": -15.9,
+   "units": 2.0,
+   "canon": 65.2
+  },
+  {
+   "name": "Odyssey 2 / Videopac",
+   "resid": -6.4,
+   "units": 2.0,
+   "canon": 74.8
+  },
+  {
+   "name": "Amstrad CPC",
+   "resid": -6.2,
+   "units": 3.0,
+   "canon": 85.4
+  },
+  {
+   "name": "PlayStation Portable",
+   "resid": -4.3,
+   "units": 82.5,
+   "canon": 89.8
+  },
+  {
+   "name": "Game Gear",
+   "resid": -3.9,
+   "units": 14.0,
+   "canon": 83.8
+  }
+ ],
+ "genres": [
+  {
+   "family": "Platform",
+   "n": 61,
+   "sprite": "hero"
+  },
+  {
+   "family": "Shooter",
+   "n": 32,
+   "sprite": "ship"
+  },
+  {
+   "family": "Fighting",
+   "n": 23,
+   "sprite": "fist"
+  },
+  {
+   "family": "RPG",
+   "n": 22,
+   "sprite": "slime"
+  },
+  {
+   "family": "Other",
+   "n": 18,
+   "sprite": "cart"
+  },
+  {
+   "family": "Adventure",
+   "n": 17,
+   "sprite": "key"
+  },
+  {
+   "family": "Puzzle",
+   "n": 12,
+   "sprite": "ghost"
+  },
+  {
+   "family": "Strategy",
+   "n": 8,
+   "sprite": "crown"
+  },
+  {
+   "family": "Metroidvania",
+   "n": 7,
+   "sprite": "suit"
+  },
+  {
+   "family": "Stealth",
+   "n": 5,
+   "sprite": "box"
+  }
+ ],
+ "devs": [
+  {
+   "name": "Nintendo",
+   "n": 23
+  },
+  {
+   "name": "Capcom",
+   "n": 21
+  },
+  {
+   "name": "Konami",
+   "n": 16
+  },
+  {
+   "name": "Sega",
+   "n": 14
+  },
+  {
+   "name": "SNK",
+   "n": 13
+  },
+  {
+   "name": "Square",
+   "n": 7
+  },
+  {
+   "name": "Hudson Soft",
+   "n": 6
+  },
+  {
+   "name": "Atari",
+   "n": 6
+  }
+ ],
+ "top": [
+  {
+   "game": "The Legend of Zelda: Ocarina of Time",
+   "system": "Nintendo 64",
+   "year": 1998,
+   "genre": "Action-adventure",
+   "score": 100
+  },
+  {
+   "game": "Super Mario 64",
+   "system": "Nintendo 64",
+   "year": 1996,
+   "genre": "Platformer",
+   "score": 100
+  },
+  {
+   "game": "Pac-Man",
+   "system": "MAME 2003-Plus",
+   "year": 1980,
+   "genre": "Maze",
+   "score": 100
+  },
+  {
+   "game": "Super Mario Bros. 3",
+   "system": "NES",
+   "year": 1988,
+   "genre": "Platformer",
+   "score": 99
+  },
+  {
+   "game": "Super Metroid",
+   "system": "Super Nintendo",
+   "year": 1994,
+   "genre": "Metroidvania",
+   "score": 99
+  },
+  {
+   "game": "Chrono Trigger",
+   "system": "Super Nintendo",
+   "year": 1995,
+   "genre": "RPG",
+   "score": 99
+  },
+  {
+   "game": "Pokemon Red / Blue",
+   "system": "Game Boy",
+   "year": 1996,
+   "genre": "RPG",
+   "score": 99
+  },
+  {
+   "game": "Metal Gear Solid",
+   "system": "PlayStation",
+   "year": 1998,
+   "genre": "Stealth",
+   "score": 99
+  },
+  {
+   "game": "Final Fantasy VII",
+   "system": "PlayStation",
+   "year": 1997,
+   "genre": "RPG",
+   "score": 99
+  },
+  {
+   "game": "Street Fighter II: Champion Edition",
+   "system": "Capcom CPS-1",
+   "year": 1992,
+   "genre": "Fighting",
+   "score": 99
+  },
+  {
+   "game": "Street Fighter III: 3rd Strike",
+   "system": "Capcom CPS-3",
+   "year": 1999,
+   "genre": "Fighting",
+   "score": 99
+  },
+  {
+   "game": "DOOM",
+   "system": "Ports",
+   "year": 1993,
+   "genre": "FPS",
+   "score": 99
+  }
+ ],
+ "missing": [
+  {
+   "k": "arcade-only",
+   "pct": 0.0
+  },
+  {
+   "k": "regional",
+   "pct": 2.6
+  },
+  {
+   "k": "multi",
+   "pct": 14.8
+  },
+  {
+   "k": "exclusive",
+   "pct": 33.6
+  }
+ ]
+}

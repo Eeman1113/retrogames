@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>retrogames · a stat screen for 205 games</title>
+<meta name="description" content="Five most unique games for each of 41 retro systems, and the statistics that audit the list.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'><rect width='12' height='12' fill='%23141033'/><rect x='2' y='2' width='8' height='6' fill='%233987e5'/><rect x='3' y='8' width='6' height='2' fill='%23e9e6ff'/></svg>">
+</head>
+<body>
+<div id="tip" role="status" aria-live="polite"></div>
+
+<!-- ── title screen ─────────────────────────────────────────────────────── -->
+<header class="gba">
+  <div class="dpad" aria-hidden="true"><i></i><i></i></div>
+  <div class="screen">
+    <div class="sprite-row" id="crew" aria-hidden="true"></div>
+    <h1>205 games,<br>41 systems,<br>one argument</h1>
+    <p class="sub">A list of the most unique game on every retro console I emulate — and
+      the statistics that check whether the list holds up.</p>
+    <a class="blink" href="#stats">press start</a>
+  </div>
+  <div class="face" aria-hidden="true"><b></b><b></b></div>
+  <div class="startsel" aria-hidden="true"><b></b><b></b></div>
+</header>
+
+<main class="wrap">
+
+<!-- ── stats ────────────────────────────────────────────────────────────── -->
+<section id="stats">
+  <p class="lbl">File select</p>
+  <div class="tiles" id="tiles"></div>
+  <p class="small dim" style="margin-top:18px">
+    Every pick had to be a game you can only really have on that machine: a hardware
+    exclusive, a release that never left Japan, or a version so far ahead of its ports
+    that the others stop counting. <strong data-n="counts.exclusive_pct">73.7</strong>%
+    of the list was locked to its platform on the day it shipped.
+  </p>
+</section>
+
+<!-- ── the headline finding ─────────────────────────────────────────────── -->
+<section>
+  <p class="lbl">Boss fight · the paradox</p>
+  <div class="win">
+    <h2>“Later games are better” is false, and the data says so twice</h2>
+    <p class="small dim">Correlation between a game's release lag — years after its
+      platform launched — and its canon score. Hover a bar for what it means.</p>
+    <div class="meter" id="paradox"></div>
+    <p class="small">Pool all 205 picks and the correlation is strong and positive, which
+      looks like proof that developers get better with practice. Centre both columns on
+      each system's own mean and it collapses to nothing. The pooled number was never
+      about games: platforms whose canon arrives late are platforms that <em>lasted</em>,
+      and long-lived platforms have stronger canons. Same data, opposite conclusion —
+      a textbook Simpson's paradox, and the reason this notebook exists.</p>
+    <details><summary>Show the numbers</summary><div id="paradox-table"></div></details>
+  </div>
+</section>
+
+<!-- ── lag histogram ────────────────────────────────────────────────────── -->
+<section>
+  <p class="lbl">Timing</p>
+  <h2>The canon is back-loaded</h2>
+  <p class="small dim">Median pick lands <strong data-n="counts.median_lag">3</strong>
+    years into its platform's life. Handhelds invert it — short lives, and the pack-in
+    is often the defining game.</p>
+  <figure><div id="lag"></div>
+    <figcaption>Count of the 205 picks by years elapsed since their platform launched.</figcaption>
+  </figure>
+</section>
+
+<!-- ── scatter ──────────────────────────────────────────────────────────── -->
+<section>
+  <p class="lbl">World map</p>
+  <h2>Selling more hardware helps. Shipping more games helps more.</h2>
+  <p class="small dim">Mean canon score of a platform's five picks against its lifetime
+    install base. Regressing on install base <em>and</em> library size reaches an
+    adjusted R² of <strong data-n="counts.adj_r2">0.568</strong> — and library size is
+    the bigger coefficient (<strong data-n="counts.coef_lib">5.14</strong> points per
+    decade of titles, against <strong data-n="counts.coef_units">3.49</strong> for units).</p>
+  <figure><div id="scatter"></div>
+    <div class="legend">
+      <span><i style="background:#3987e5"></i>Console</span>
+      <span><i style="background:#d95926"></i>Handheld</span>
+      <span><i style="background:#199e70"></i>Computer, add-on or arcade</span>
+      <span><i style="background:#776fae"></i>least-squares fit</span>
+    </div>
+    <figcaption>Arcade boards are excluded — a coin-op board has no install base to plot against.</figcaption>
+  </figure>
+  <details><summary>Show the numbers</summary><div id="scatter-table"></div></details>
+</section>
+
+<!-- ── residuals ────────────────────────────────────────────────────────── -->
+<section>
+  <p class="lbl">Scoreboard</p>
+  <h2>Who punched above their weight</h2>
+  <p class="small dim">Residual from that model: how much stronger or weaker a platform's
+    canon is than its commercial size predicts. The Neo Geo sold 410,000 units and
+    produced a top five that scores like a mass-market console.</p>
+  <figure><div id="resid"></div>
+    <figcaption>Blue sits above the prediction, red below. Hover for each platform's numbers.</figcaption>
+  </figure>
+  <details><summary>Show the numbers</summary><div id="resid-table"></div></details>
+</section>
+
+<!-- ── party ────────────────────────────────────────────────────────────── -->
+<section>
+  <p class="lbl">Party</p>
+  <h2>What the canon is made of</h2>
+  <p class="small dim">Genre families across all 205 picks.</p>
+  <div class="win"><div class="party" id="party"></div></div>
+</section>
+
+<!-- ── high scores ──────────────────────────────────────────────────────── -->
+<section>
+  <p class="lbl">High scores</p>
+  <h2>The twelve highest-rated picks</h2>
+  <div class="win win--flat" id="top"></div>
+  <div class="btns">
+    <a class="btn" href="https://github.com/Eeman1113/retrogames/blob/main/TOP5_GAMES.md">Read all 205 picks</a>
+    <a class="btn btn--ghost" href="https://github.com/Eeman1113/retrogames/blob/main/analysis.ipynb">Open the notebook</a>
+  </div>
+</section>
+
+<!-- ── credits ──────────────────────────────────────────────────────────── -->
+<section>
+  <p class="lbl">Credits</p>
+  <div class="win">
+    <h3>How the score works, and what it can't do</h3>
+    <p class="small"><code>canon_score</code> is a curated 0–100 index of how strongly a
+      title sits in the retro canon. It is an editorial construct, not a scraped review
+      aggregate, and the notebook treats it as the suspect variable throughout: it re-runs
+      the headline result 2,000 times with ±5 points of simulated curator disagreement
+      (the sign holds in 100% of draws) and collapses the scale to rank-only as a
+      second check.</p>
+    <p class="small">Only <strong data-n="counts.sales_known_pct">22</strong>% of picks
+      have a published sales figure, and the gap is structured — no arcade-only title has
+      one, and almost no Japan-only release does. That is missing-not-at-random data, so
+      the notebook tests the missingness instead of dropping it. Two hardware figures are
+      estimates rather than measurements: Nintendo reports NES+Famicom as one number, and
+      Game Boy+Game Boy Color as another.</p>
+    <p class="small">These are the top five <em>per system</em>, so nothing here describes
+      the average game on a platform — only its ceiling.</p>
+  </div>
+</section>
+
+<footer class="wrap">
+  <p>Built from <a href="https://github.com/Eeman1113/retrogames/tree/main/data">data/*.csv</a>
+    by <a href="https://github.com/Eeman1113/retrogames/blob/main/scripts/build_site.py">build_site.py</a>;
+    every number on this page is recomputed from the same source the notebook uses.
+    Sprites hand-drawn at 12×12. Source: <a href="https://github.com/Eeman1113/retrogames">Eeman1113/retrogames</a>.</p>
+</footer>
+</main>
+<script src="app.js"></script>
+</body>
+</html>

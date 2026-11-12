@@ -1,0 +1,191 @@
+/* ───────────────────────────────────────────────────────────────────────────
+   retrogames · a stat screen for a data-science audit
+   Palette: AGB indigo shell over a deep LCD ground. Data marks use a
+   CVD-validated trio (blue / rust / jade) checked against the #141033 panel.
+   ─────────────────────────────────────────────────────────────────────── */
+:root {
+  --ground:   #0b0820;
+  --shell:    #413593;
+  --shell-hi: #6153d6;
+  --panel:    #141033;
+  --panel-2:  #1b1545;
+  --edge:     #e9e6ff;
+  --ink:      #f3f1ff;
+  --ink-2:    #a9a3d8;
+  --ink-3:    #776fae;
+  --d1: #3987e5;  --d2: #d95926;  --d3: #199e70;  --neg: #e66767;
+  --px: 4px;
+  --display: "Press Start 2P", ui-monospace, monospace;
+  --body: "Space Grotesk", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  /* faint LCD scanline + pixel grid, fixed so it reads as a screen not a texture */
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.022) 0 1px, transparent 1px 3px);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap { width: min(880px, 92vw); margin: 0 auto; }
+
+/* ── pixel window: 4px hard border, notched corners, no border-radius ──── */
+.win {
+  background: var(--panel);
+  border: var(--px) solid var(--edge);
+  clip-path: polygon(
+    8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px),
+    calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
+  padding: 28px 26px;
+}
+.win--flat { background: var(--panel-2); }
+
+/* ── type ──────────────────────────────────────────────────────────────── */
+h1, h2, h3, .lbl, .stat-v, .btn { font-family: var(--display); font-weight: 400; }
+h1 { font-size: clamp(18px, 4.6vw, 30px); line-height: 1.5; margin: 0; letter-spacing: .02em; }
+h2 { font-size: clamp(13px, 2.4vw, 17px); line-height: 1.7; margin: 0 0 6px; }
+h3 { font-size: 11px; line-height: 1.8; margin: 0 0 10px; color: var(--ink-2); }
+p  { margin: 0 0 14px; max-width: 68ch; }
+a  { color: var(--d1); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+a:hover { color: var(--ink); }
+:focus-visible { outline: 3px solid var(--d2); outline-offset: 3px; }
+.dim { color: var(--ink-2); }
+.small { font-size: 14px; }
+
+/* ── the handheld ──────────────────────────────────────────────────────── */
+.gba {
+  margin: 56px auto 0;
+  width: min(760px, 94vw);
+  background: var(--shell);
+  border: var(--px) solid var(--shell-hi);
+  clip-path: polygon(
+    26px 0, calc(100% - 26px) 0, 100% 26px, 100% calc(100% - 14px),
+    calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 26px);
+  padding: 22px;
+  display: grid;
+  grid-template-columns: 56px 1fr 56px;
+  gap: 16px;
+  align-items: center;
+}
+.screen {
+  background: var(--panel);
+  border: var(--px) solid #0b0820;
+  aspect-ratio: 3 / 2;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  padding: 18px;
+  gap: 14px;
+  overflow: hidden;
+}
+.screen h1 { color: var(--ink); }
+.screen .sub { font-size: 13px; color: var(--ink-2); max-width: 46ch; margin-inline: auto; }
+
+/* d-pad + face buttons, drawn flat from squares */
+.dpad { width: 48px; height: 48px; position: relative; justify-self: center; }
+.dpad i { position: absolute; background: #2b2270; }
+.dpad i:nth-child(1) { left: 16px; top: 0; width: 16px; height: 48px; }
+.dpad i:nth-child(2) { top: 16px; left: 0; width: 48px; height: 16px; }
+.face { display: grid; gap: 8px; justify-self: center; }
+.face b { width: 20px; height: 20px; background: #2b2270; display: block; }
+.face b:first-child { margin-left: 14px; }
+.startsel { grid-column: 1 / -1; display: flex; gap: 10px; justify-content: center; }
+.startsel b { width: 34px; height: 8px; background: #2b2270; display: block; }
+
+.blink { color: var(--d2); font-family: var(--display); font-size: 11px; }
+@media (prefers-reduced-motion: no-preference) {
+  .blink { animation: blink 1.1s steps(1, end) infinite; }
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ── sprites ───────────────────────────────────────────────────────────── */
+.sprite { image-rendering: pixelated; display: block; }
+.sprite-row { display: flex; gap: 18px; justify-content: center; }
+@media (prefers-reduced-motion: no-preference) {
+  .sprite-row .sprite { animation: bob 1.6s steps(2, end) infinite; }
+  .sprite-row .sprite:nth-child(2n) { animation-delay: .8s; }
+}
+@keyframes bob { 50% { transform: translateY(-4px); } }
+
+/* ── layout ────────────────────────────────────────────────────────────── */
+section { margin: 72px 0; }
+.lbl {
+  font-size: 10px; color: var(--d2); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 10px;
+}
+.lbl::after { content: ""; flex: 1; height: var(--px); background: var(--panel-2); }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
+.tile { padding: 18px 16px; }
+.stat-v { font-size: clamp(20px, 3.4vw, 26px); color: var(--ink); display: block; }
+.stat-k { font-size: 13px; color: var(--ink-2); margin-top: 8px; display: block; }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+@media (max-width: 720px) { .grid-2 { grid-template-columns: 1fr; } }
+
+/* ── charts ────────────────────────────────────────────────────────────── */
+figure { margin: 0; }
+figcaption { font-size: 13px; color: var(--ink-2); margin-top: 12px; }
+svg { width: 100%; height: auto; overflow: visible; }
+svg text { font-family: var(--body); fill: var(--ink-2); }
+svg .vlab { font-family: var(--display); font-size: 9px; fill: var(--ink); }
+.mark { cursor: default; }
+.mark:hover { stroke: var(--edge); stroke-width: 3; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; margin-top: 14px; }
+.legend span { display: flex; align-items: center; gap: 8px; color: var(--ink-2); }
+.legend i { width: 12px; height: 12px; display: block; }
+
+details { margin-top: 16px; font-size: 14px; }
+summary { cursor: pointer; color: var(--ink-2); font-size: 13px; }
+summary:hover { color: var(--ink); }
+table { border-collapse: collapse; width: 100%; margin-top: 12px; font-size: 14px; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 2px solid var(--panel-2); }
+th { color: var(--ink-2); font-weight: 500; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* HP-bar style meter used for the paradox panel */
+.meter { display: grid; grid-template-columns: 1fr; gap: 6px; margin: 20px 0; }
+.meter-row { display: grid; grid-template-columns: 180px 1fr; gap: 14px; align-items: center; }
+@media (max-width: 620px) { .meter-row { grid-template-columns: 1fr; gap: 4px; } }
+.meter-k { font-size: 14px; color: var(--ink-2); }
+.meter-track { position: relative; height: 22px; background: var(--panel-2); }
+.meter-track i { position: absolute; top: 0; height: 100%; display: block; }
+.meter-track u { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink-3); }
+.meter-v { font-family: var(--display); font-size: 10px; position: absolute; top: 4px; }
+
+.party { display: grid; gap: 10px; }
+.party-row { display: grid; grid-template-columns: 44px 120px 1fr 44px; gap: 12px; align-items: center; }
+.party-bar { height: 14px; background: var(--d1); }
+.party-n { font-family: var(--display); font-size: 10px; text-align: right; color: var(--ink-2); }
+@media (max-width: 620px) { .party-row { grid-template-columns: 32px 92px 1fr 36px; gap: 8px; } }
+
+.btn {
+  display: inline-block; font-size: 11px; padding: 14px 18px;
+  background: var(--d1); color: #04030f; text-decoration: none;
+  border: var(--px) solid var(--edge);
+}
+.btn:hover { background: var(--edge); color: #04030f; }
+.btn--ghost { background: transparent; color: var(--ink); }
+.btn--ghost:hover { background: var(--panel-2); color: var(--ink); }
+.btns { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 22px; }
+
+footer { margin: 90px 0 60px; color: var(--ink-3); font-size: 13px; }
+footer a { color: var(--ink-2); }
+
+#tip {
+  position: fixed; pointer-events: none; z-index: 9; opacity: 0;
+  background: var(--edge); color: #0b0820; padding: 7px 10px;
+  font-size: 13px; line-height: 1.4; max-width: 260px;
+  transition: opacity .09s linear;
+}
+@media (prefers-reduced-motion: reduce) { #tip { transition: none; } }

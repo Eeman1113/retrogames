@@ -178,13 +178,13 @@ Source of truth is `data/games.csv` + `data/systems.csv`. This file is generated
 
 | # | Game | Year | Genre | Developer | Availability | canon |
 |---|------|------|-------|-----------|--------------|-------|
-| 1 | **Metroid: Zero Mission** | 2004 | Metroidvania | Nintendo R&D1 | exclusive | 95 |
+| 1 | **Metroid Fusion** | 2002 | Metroidvania | Nintendo R&D1 | exclusive | 95 |
 | 2 | **Castlevania: Aria of Sorrow** | 2003 | Metroidvania | Konami | exclusive | 94 |
 | 3 | **Mother 3** | 2006 | RPG | Brownie Brown / HAL | region-locked | 93 |
 | 4 | **Advance Wars** | 2001 | Tactical | Intelligent Systems | exclusive | 92 |
 | 5 | **WarioWare, Inc.: Mega Microgame$!** | 2003 | Minigame | Nintendo R&D1 | exclusive | 91 |
 
-- **Metroid: Zero Mission** — A remake that out-designs the original and adds a stealth third act.
+- **Metroid Fusion** — An original Metroid built for the hardware, with the SA-X turning exploration into a hunt.
 - **Castlevania: Aria of Sorrow** — The soul-collection system; the best-balanced Igavania.
 - **Mother 3** — A rhythm combo system wrapped around the saddest script Nintendo ever shipped.
 - **Advance Wars** — Perfect-information turn-based war with zero randomness.
