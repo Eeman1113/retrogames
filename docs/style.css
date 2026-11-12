@@ -189,3 +189,18 @@ footer a { color: var(--ink-2); }
   transition: opacity .09s linear;
 }
 @media (prefers-reduced-motion: reduce) { #tip { transition: none; } }
+
+/* The screen holds a fixed 3:2 aspect like the real hardware, which clips its own
+   content once the column gets narrow. Below 760px the screen grows to fit instead,
+   and the controls shrink rather than stealing width from it. */
+@media (max-width: 760px) {
+  .gba { grid-template-columns: 38px 1fr 38px; gap: 10px; padding: 14px; margin-top: 28px; }
+  .screen { aspect-ratio: auto; padding: 22px 14px; }
+  .dpad { width: 32px; height: 32px; }
+  .dpad i:nth-child(1) { left: 10px; top: 0; width: 12px; height: 32px; }
+  .dpad i:nth-child(2) { top: 10px; left: 0; width: 32px; height: 12px; }
+  .face b { width: 14px; height: 14px; }
+  .face b:first-child { margin-left: 10px; }
+  section { margin: 56px 0; }
+  .win { padding: 22px 16px; }
+}
