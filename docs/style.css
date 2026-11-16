@@ -124,9 +124,12 @@ section { margin: 72px 0; }
 }
 .lbl::after { content: ""; flex: 1; height: var(--px); background: var(--panel-2); }
 
-.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(176px, 1fr)); gap: 14px; }
 .tile { padding: 18px 16px; }
-.stat-v { font-size: clamp(20px, 3.4vw, 26px); color: var(--ink); display: block; }
+.stat-v {
+  font-size: clamp(15px, 2.1vw, 21px); color: var(--ink); display: block;
+  letter-spacing: -.02em; white-space: nowrap;
+}
 .stat-k { font-size: 13px; color: var(--ink-2); margin-top: 8px; display: block; }
 
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
@@ -140,6 +143,8 @@ figure { margin: 0; }
 .fig-narrow figcaption { max-width: 440px; }
 figcaption { font-size: 13px; color: var(--ink-2); margin-top: 12px; }
 svg { width: 100%; height: auto; overflow: visible; }
+/* sprites carry their own intrinsic size and must opt out of the chart rule */
+svg.sprite { width: auto; height: auto; flex: 0 0 auto; }
 svg text { font-family: var(--body); fill: var(--ink-2); }
 svg .vlab { font-family: var(--display); font-size: 9px; fill: var(--ink); }
 .mark { cursor: default; }

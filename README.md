@@ -74,6 +74,36 @@ The city is strictly decoration: `city.js` returns early if either the art or th
 simulation is missing, and the legibility scrim is scoped to a class it only sets
 once it has started. The data renders with or without the town.
 
+## The city
+
+The site runs a small Pokémon FireRed-style town on a canvas behind the content.
+It is not a loop of decorative sprites: four archetypes — surveyor, courier,
+engineer, gardener — pathfind around the town on A*, pick goals that suit their
+job, stop to talk when they end up next to each other, and occasionally say
+something. Content panels are opaque, so they read as the town's own blocks and
+the streets run through the gaps between sections; an agent walking behind a
+panel is occluded by it.
+
+The charts joined in. The lag histogram and the release-year columns render as a
+skyline, each bar carrying a roofline, lit windows and a ground-floor door, with
+the install-base bars as side-on terraces. The window decoration is drawn inside
+the mark, so it never alters the value the mark encodes. Section rules are
+wooden fences and every section label gets a signpost.
+
+Three files, three authors, one interface:
+
+| File | Owns |
+|------|------|
+| `docs/city-art.js` | 87 pixel grids, 48-entry shared palette: 16×16 FireRed metatiles, props, four building facades with lit-window coordinates, and 16×24 actors with four-frame walk cycles per direction |
+| `docs/city-sim.js` | A* with a straight-line tie-break, the agent state machine, job loops, barks, seeded PRNG. Pure logic — no DOM, no drawing |
+| `docs/city.js` | Canvas, town layout, parallax, draw loop, and the frame-budget guard |
+
+Measured at 75fps (13.3ms median, pinned to the display refresh) with 13 agents,
+2,436 tiles, 166 props and 13 buildings; the simulation itself costs 0.0011ms a
+frame. If frame intervals stay above 28ms the city halves its population, then
+removes itself — the decoration is what gets dropped, never the page.
+`prefers-reduced-motion` stops the simulation and freezes the town.
+
 ## What the analysis found
 
 1. **The canon is back-loaded — median 3 years after launch** — but handhelds invert

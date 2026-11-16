@@ -68,10 +68,19 @@
     const BW = 9, BH = 7;
     for (let c = 2; c < cols - 2; c += BW) vRoads.push(c);
     for (let r = 2; r < rows - 2; r += BH) hRoads.push(r);
+    const mainV = vRoads[(vRoads.length / 2) | 0];
+    const mainH = hRoads[(hRoads.length / 2) | 0];
     vRoads.forEach(c => { for (let r = 0; r < rows; r++) for (let d = 0; d < 2; d++) {
-      const i = at(c + d, r); if (c + d < cols) { walk[i] = 1; ground[i] = G.path; } } });
+      const i = at(c + d, r);
+      if (c + d < cols) { walk[i] = 1; ground[i] = c === mainV ? G.pavement : G.path; } } });
     hRoads.forEach(r => { for (let c = 0; c < cols; c++) for (let d = 0; d < 2; d++) {
-      const i = at(c, r + d); if (r + d < rows) { walk[i] = 1; ground[i] = ground[i] === G.path ? G.pavement : G.path; } } });
+      const i = at(c, r + d);
+      if (r + d < rows) {
+        walk[i] = 1;
+        /* a paved street stays paved where a dirt route crosses it */
+        if (r === mainH || ground[i] === G.pavement) ground[i] = G.pavement;
+        else ground[i] = G.path;
+      } } });
 
     const props = [], buildings = [], plots = [];
     const B = ART.buildings || {}, P = ART.props || {};
@@ -180,7 +189,7 @@
   function camY() {
     const doc = Math.max(1, document.documentElement.scrollHeight - innerHeight);
     const t = Math.min(1, Math.max(0, scrollY / doc));
-    return t * Math.max(0, worldH - innerHeight);
+    return Math.round(t * Math.max(0, worldH - innerHeight));
   }
 
   function drawGrid(oy, now) {
@@ -191,7 +200,7 @@
     for (let r = r0; r <= r1; r++) {
       for (let c = 0; c < cols; c++) {
         let key = town.groundAt(c, r);
-        if (key === "path" && t.roadLineH && r % 7 === 3 && c % 2 === 0) key = "roadLineH";
+        if (key === "pavement" && t.roadLineH && r % 4 === 1 && c % 2 === 0) key = "roadLineH";
         let g = t[key] || t.grass;
         if (Array.isArray(g) && Array.isArray(g[0])) g = g[wf % g.length];   // framed tile
         if (!g) continue;
@@ -276,11 +285,25 @@
 
   /* ── loop ─────────────────────────────────────────────────────────────── */
   let last = 0, raf = 0, running = true;
+  /* This machine renders the town at its display's refresh rate, but a weaker
+     one should lose the decoration rather than the page. Watch the real frame
+     interval and shed load before the city can cost anyone a smooth scroll. */
+  let slow = 0, degraded = 0;
+  function budget(dt) {
+    if (dt > 28) slow++; else slow = Math.max(0, slow - 1);
+    if (slow > 45 && degraded < 2) {
+      degraded++; slow = 0;
+      if (degraded === 1) sim.setPopulation(Math.max(3, (sim.agents.length / 2) | 0));
+      else cv.style.display = "none";
+    }
+  }
   function frame(now) {
     raf = requestAnimationFrame(frame);
     const dt = Math.min(50, now - last || 16);
     last = now;
     if (!running) return;
+    budget(dt);
+    if (degraded > 1) return;
     if (!reduced) sim.update(dt);
     const oy = camY();
     ctx.clearRect(0, 0, innerWidth, innerHeight);
