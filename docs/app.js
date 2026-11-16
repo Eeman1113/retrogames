@@ -204,14 +204,53 @@ function build() {
   });
 }
 
+/* ── charts ──────────────────────────────────────────────────────────────
+   The city conceit runs into the charts: a vertical bar is a tower and gets a
+   window grid, a horizontal bar is a terrace and gets a row of windows. The
+   windows are decoration drawn INSIDE the mark, so they never change the
+   value the mark encodes. */
+function windowsV(x, y, w, h, seed = 1) {
+  /* A tower: a roof cap, then rows of windows with a ground floor and door
+     left clear. Pitch is generous on purpose — a dense grid reads as texture,
+     a sparse one reads as a building. */
+  const win = 5, pitch = 9, roof = 5, floorH = 11;
+  let g = `<rect x="${x}" y="${y}" width="${w}" height="${roof}" fill="#0b0820" opacity=".38"/>`;
+  const cols = Math.floor((w - 6) / pitch);
+  if (cols < 1) return g;
+  const x0 = x + Math.round((w - (cols * pitch - (pitch - win))) / 2);
+  for (let wy = y + roof + 6; wy < y + h - floorH; wy += pitch)
+    for (let i = 0; i < cols; i++) {
+      const wx = x0 + i * pitch;
+      const on = ((wx * 31 + wy * 17 + seed * 7) % 101) / 101 < 0.55;
+      g += `<rect x="${wx}" y="${wy}" width="${win}" height="${win}"
+            fill="${on ? "#c98500" : "#0b0820"}" opacity="${on ? ".55" : ".45"}"/>`;
+    }
+  if (h > floorH + roof + 14 && w > 16)       // a door on the ground floor
+    g += `<rect x="${x + (w - 7) / 2}" y="${y + h - floorH + 2}" width="7" height="${floorH - 2}"
+          fill="#0b0820" opacity=".5"/>`;
+  return g;
+}
+function windowsH(x, y, w, h) {
+  /* A terrace seen side-on: one row of windows, a door at the near end. */
+  const win = 5, pitch = 10;
+  let g = "";
+  for (let wx = x + 9; wx < x + w - 7; wx += pitch) {
+    const on = ((wx * 13 + y * 7) % 83) / 83 < 0.5;
+    g += `<rect x="${wx}" y="${y + Math.max(2, (h - win) / 2)}" width="${win}" height="${Math.min(win, h - 4)}"
+          fill="${on ? "#c98500" : "#0b0820"}" opacity="${on ? ".5" : ".4"}"/>`;
+  }
+  return g + `<rect x="${x + 2}" y="${y + 2}" width="4" height="${h - 4}" fill="#0b0820" opacity=".45"/>`;
+}
+
 /* ── charts ────────────────────────────────────────────────────────────── */
 function hist(el, data, median) {
   const W=760,H=240,M={l:44,r:12,t:14,b:44};
   const max=Math.max(...data.map(d=>d.n)), bw=(W-M.l-M.r)/data.length;
   let g="";
-  data.forEach((d,i)=>{ const h=(d.n/max)*(H-M.t-M.b);
-    g+=`<rect class="mark" x="${M.l+i*bw+3}" y="${H-M.b-h}" width="${bw-6}" height="${h}" fill="${C.d1}"
+  data.forEach((d,i)=>{ const h=(d.n/max)*(H-M.t-M.b), bx=M.l+i*bw+3, by=H-M.b-h;
+    g+=`<rect class="mark" x="${bx}" y="${by}" width="${bw-6}" height="${h}" fill="${C.d1}"
          data-tip="${d.n} picks arrived ${d.lag} year${d.lag===1?"":"s"} after launch"/>
+        ${h>30?windowsV(bx,by,bw-6,h,i+1):""}
         <text x="${M.l+i*bw+bw/2}" y="${H-M.b+20}" text-anchor="middle" font-size="12">${d.lag}</text>`; });
   const mi=data.findIndex(d=>d.lag===median), mx=M.l+mi*bw+bw/2;
   g+=`<line x1="${mx}" x2="${mx}" y1="${M.t}" y2="${H-M.b}" stroke="${C.d2}" stroke-width="3"/>
@@ -243,7 +282,8 @@ function years(el, data) {
   for(let y=y0;y<=y1;y++){
     const n=byYear[y]||0, h=(n/max)*(H-M.t-M.b), x=M.l+(y-y0)*bw;
     g+=`<rect class="mark" x="${x+1.5}" y="${H-M.b-h}" width="${bw-3}" height="${Math.max(h,1)}"
-         fill="${n?C.d1:C.panel2}" data-tip="${y}: ${n} pick${n===1?"":"s"}"/>`;
+         fill="${n?C.d1:C.panel2}" data-tip="${y}: ${n} pick${n===1?"":"s"}"/>
+        ${h>34?windowsV(x+1.5,H-M.b-h,bw-3,h,y):""}`;
     if(y%5===0) g+=`<text x="${x+bw/2}" y="${H-M.b+18}" text-anchor="middle" font-size="12">${y}</text>`;
   }
   g+=`<text x="${(M.l+W-M.r)/2}" y="${H-6}" text-anchor="middle" font-size="12" fill="${C.ink3}">picks per release year</text>`;
@@ -320,8 +360,10 @@ function unitsBar(el, data) {
     g+=`<line x1="${M.l+X(v)}" x2="${M.l+X(v)}" y1="${M.t-4}" y2="${H-M.b}" stroke="${C.panel2}" stroke-width="2"/>
         <text x="${M.l+X(v)}" y="${H-M.b+18}" text-anchor="middle" font-size="12">${v<1?"0.1M":v+"M"}</text>`;});
   data.forEach((d,i)=>{ const y=M.t+i*rowH+3;
-    g+=`<rect class="mark" x="${M.l}" y="${y}" width="${Math.max(X(d.units),2)}" height="${rowH-7}" fill="${catColor(d.cat)}"
+    const bw2=Math.max(X(d.units),2);
+    g+=`<rect class="mark" x="${M.l}" y="${y}" width="${bw2}" height="${rowH-7}" fill="${catColor(d.cat)}"
          data-tip="<b>${esc(d.name)}</b><br>${d.units}M units shipped"/>
+        ${bw2>46?windowsH(M.l,y,bw2,rowH-7):""}
         <text x="${M.l-12}" y="${y+rowH-9}" text-anchor="end" font-size="11.5" fill="${C.ink}">${esc(d.name)}</text>
         <text class="vlab" x="${M.l+X(d.units)+8}" y="${y+rowH-9}" fill="${C.ink2}">${d.units}</text>`;});
   svg(el,W,H,g,"Lifetime hardware units shipped per system, log scale");
@@ -334,15 +376,30 @@ function biplot(el, p) {
   const X=v=>M+(v-x0)/(x1-x0)*(W-2*M), Y=v=>H-M-(v-y0)/(y1-y0)*(H-2*M-14);
   let g=`<line x1="${M}" x2="${W-M}" y1="${Y(0)}" y2="${Y(0)}" stroke="${C.panel2}" stroke-width="2"/>
          <line x1="${X(0)}" x2="${X(0)}" y1="${M}" y2="${H-M}" stroke="${C.panel2}" stroke-width="2"/>`;
-  p.loadings.forEach((l,j)=>{ const sc=2.6;
-    g+=`<line x1="${X(0)}" y1="${Y(0)}" x2="${X(l[0]*sc)}" y2="${Y(l[1]*sc)}" stroke="${C.ink3}" stroke-width="2"/>
-        <text x="${X(l[0]*sc*1.14)}" y="${Y(l[1]*sc*1.14)}" text-anchor="middle" font-size="11" fill="${C.ink3}">${p.features[j]}</text>`;});
+  /* loading arrows first, with their labels pushed clear of the arrowheads */
+  p.loadings.forEach((l,j)=>{ const sc=2.6, lx=X(l[0]*sc), ly=Y(l[1]*sc);
+    const ux=lx-X(0), uy=ly-Y(0), m=Math.hypot(ux,uy)||1;
+    g+=`<line x1="${X(0)}" y1="${Y(0)}" x2="${lx}" y2="${ly}" stroke="${C.ink3}" stroke-width="2"/>
+        <text x="${lx+ux/m*16}" y="${ly+uy/m*16+4}" text-anchor="middle" font-size="11"
+          fill="${C.ink3}">${p.features[j]}</text>`;});
   const col=[C.d1,C.d2,C.d3];
   p.points.forEach(d=>{ g+=`<rect class="mark" x="${X(d.x)-6}" y="${Y(d.y)-6}" width="12" height="12" fill="${col[d.c]}"
       data-tip="<b>${esc(d.name)}</b><br>${esc(p.names[d.c])}"/>`;});
-  const out=p.points.filter(d=>Math.abs(d.x)>2||Math.abs(d.y)>1.9)
-                    .sort((a,b)=>a.y-b.y||a.x-b.x);
-  out.forEach((d,i)=>{ g+=`<text class="vlab" x="${X(d.x)}" y="${Y(d.y)+(i%2?20:-13)}" text-anchor="middle">${esc(d.name)}</text>`;});
+  /* Label only the outliers, and only when the label will not land on one
+     already placed — an unreadable pile of names is worse than fewer names. */
+  const placed=[];
+  p.points.filter(d=>Math.abs(d.x)>2.1||Math.abs(d.y)>2.0)
+          .sort((a,b)=>Math.max(Math.abs(b.x),Math.abs(b.y))-Math.max(Math.abs(a.x),Math.abs(a.y)))
+          .forEach(d=>{
+    const px=X(d.x), w=d.name.length*5.6;
+    for(const dy of [-14,22,-26,34]){
+      const py=Y(d.y)+dy;
+      if(placed.some(q=>Math.abs(q.x-px)<(q.w+w)/2+8 && Math.abs(q.y-py)<13)) continue;
+      placed.push({x:px,y:py,w});
+      g+=`<text class="vlab" x="${px}" y="${py}" text-anchor="middle">${esc(d.name)}</text>`;
+      return;
+    }
+  });
   svg(el,W,H,g,"PCA of six platform features with k-means clusters");
   q("#pca-legend").innerHTML = [0,1,2].map(k =>
     `<span><i style="background:${col[k]}"></i>${esc(p.names[k])} (${p.sizes[k]})</span>`).join("")

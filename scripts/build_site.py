@@ -77,11 +77,32 @@ Xz = (feat[F].values - feat[F].values.mean(0)) / feat[F].values.std(0)
 U, S, Vt = np.linalg.svd(Xz - Xz.mean(0), full_matrices=False)
 evr = (S ** 2 / (S ** 2).sum())
 PCs = U * S
-rng = np.random.default_rng(7)
-cent = Xz[rng.choice(len(Xz), 3, replace=False)]
-for _ in range(120):
-    lab = np.argmin(((Xz[:, None, :] - cent[None]) ** 2).sum(-1), axis=1)
-    cent = np.array([Xz[lab == k].mean(0) if (lab == k).any() else cent[k] for k in range(3)])
+# k-means++ with restarts. A single random start converged somewhere the
+# notebook's sklearn run (n_init=25) did not, and the site then disagreed with
+# the analysis it is reporting. Keep the best-inertia solution of many.
+def _kmeans(X, k, restarts=50, iters=150, seed=0):
+    rng = np.random.default_rng(seed)
+    best = (np.inf, None, None)
+    for _ in range(restarts):
+        c = X[rng.integers(len(X))][None, :]                      # k-means++ seeding
+        for _ in range(k - 1):
+            d2 = ((X[:, None, :] - c[None]) ** 2).sum(-1).min(1)
+            p = d2 / d2.sum() if d2.sum() > 0 else None
+            c = np.vstack([c, X[rng.choice(len(X), p=p)]])
+        lab = None
+        for _ in range(iters):
+            new = np.argmin(((X[:, None, :] - c[None]) ** 2).sum(-1), axis=1)
+            if lab is not None and (new == lab).all():
+                break
+            lab = new
+            c = np.array([X[lab == j].mean(0) if (lab == j).any() else c[j] for j in range(k)])
+        inertia = float(((X - c[lab]) ** 2).sum())
+        if inertia < best[0]:
+            best = (inertia, lab.copy(), c.copy())
+    return best
+
+inertia, lab, cent = _kmeans(Xz, 3, seed=0)
+print(f"k-means k=3 inertia {inertia:.1f} · sizes {np.bincount(lab).tolist()}")
 czm = pd.DataFrame(cent, columns=F)
 names = {}
 for k in range(3):

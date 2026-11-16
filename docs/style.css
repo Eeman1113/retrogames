@@ -134,6 +134,10 @@ section { margin: 72px 0; }
 
 /* ── charts ────────────────────────────────────────────────────────────── */
 figure { margin: 0; }
+/* charts authored on a ~380px viewBox must not be stretched across the page:
+   their labels would outgrow the body text they sit beside */
+.fig-narrow svg { max-width: 440px; }
+.fig-narrow figcaption { max-width: 440px; }
 figcaption { font-size: 13px; color: var(--ink-2); margin-top: 12px; }
 svg { width: 100%; height: auto; overflow: visible; }
 svg text { font-family: var(--body); fill: var(--ink-2); }
@@ -296,3 +300,50 @@ footer a { color: var(--ink-2); }
   .pill { grid-column: 2 / -1; justify-self: start; }
   .toc { gap: 0 14px; font-size: 12px; }
 }
+
+/* ── the city ──────────────────────────────────────────────────────────────
+   A pixel town runs on a fixed canvas behind everything. Content panels are
+   opaque, so they read as the city's own blocks and the streets show through
+   the gutters. The scrim darkens only the reading column: the town stays
+   visible in the margins, where it can be watched without fighting the text. */
+#city {
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none; opacity: .5;
+  image-rendering: pixelated;
+}
+body.has-city::after {
+  content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  --colw: min(880px, 92vw);
+  background: linear-gradient(to right,
+    transparent 0,
+    transparent calc(50% - var(--colw) / 2 - 56px),
+    rgba(11, 8, 32, .9) calc(50% - var(--colw) / 2 - 8px),
+    rgba(11, 8, 32, .9) calc(50% + var(--colw) / 2 + 8px),
+    transparent calc(50% + var(--colw) / 2 + 56px),
+    transparent 100%);
+}
+body > *:not(#city) { position: relative; z-index: 1; }
+.gba, .win, .sys, .filters input, .filters select { background-color: var(--panel); }
+.win--flat, .sys > summary:hover { background-color: var(--panel-2); }
+
+/* section rules become fences: posts every 8px with two rails */
+.lbl::after {
+  height: 10px; background:
+    repeating-linear-gradient(90deg,
+      var(--shell) 0 2px, transparent 2px 10px),
+    linear-gradient(transparent 2px, var(--shell-hi) 2px 4px,
+      transparent 4px 6px, var(--shell-hi) 6px 8px, transparent 8px);
+  opacity: .85;
+}
+/* a plot line under each section heading: kerb, then road */
+section > h2 { position: relative; }
+
+/* furniture injected by city.js — a signpost beside every section label */
+.lbl .signpost { flex: 0 0 auto; margin-top: -8px; }
+.trees { display: flex; gap: 10px; align-items: flex-end; margin: 0 0 -4px 2px; opacity: .9; }
+
+@media (max-width: 760px) {
+  #city { opacity: .32; }
+  body.has-city::after { background: rgba(11, 8, 32, .82); }
+}
+@media (prefers-reduced-motion: reduce) { #city { opacity: .34; } }
