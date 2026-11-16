@@ -7,14 +7,13 @@
 <meta name="description" content="Five most unique games for each of 41 retro systems, and the statistics that audit the list.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'><rect width='12' height='12' fill='%23141033'/><rect x='2' y='2' width='8' height='6' fill='%233987e5'/><rect x='3' y='8' width='6' height='2' fill='%23e9e6ff'/></svg>">
 </head>
 <body>
 <div id="tip" role="status" aria-live="polite"></div>
 
-<!-- ── title screen ─────────────────────────────────────────────────────── -->
 <header class="gba">
   <div class="dpad" aria-hidden="true"><i></i><i></i></div>
   <div class="screen">
@@ -28,29 +27,42 @@
   <div class="startsel" aria-hidden="true"><b></b><b></b></div>
 </header>
 
+<nav class="wrap toc" aria-label="Sections">
+  <a href="#stats">Stats</a><a href="#paradox-sec">The paradox</a><a href="#timing">Timing</a>
+  <a href="#timeline-sec">Timeline</a><a href="#map">Hardware vs quality</a>
+  <a href="#archetypes">Archetypes</a><a href="#genres">Genres</a>
+  <a href="#studios">Studios</a><a href="#lockin-sec">Lock-in</a>
+  <a href="#roster-sec">All 41 systems</a><a href="#index-sec">All 205 games</a>
+</nav>
+
 <main class="wrap">
 
-<!-- ── stats ────────────────────────────────────────────────────────────── -->
 <section id="stats">
   <p class="lbl">File select</p>
   <div class="tiles" id="tiles"></div>
-  <p class="small dim" style="margin-top:18px">
+  <p class="small dim colw">
     Every pick had to be a game you can only really have on that machine: a hardware
     exclusive, a release that never left Japan, or a version so far ahead of its ports
     that the others stop counting. <strong data-n="counts.exclusive_pct">73.7</strong>%
-    of the list was locked to its platform on the day it shipped.
+    of the list was locked to its platform on the day it shipped, across
+    <strong data-n="counts.genres">39</strong> distinct genres and
+    <strong data-n="counts.makers">16</strong> manufacturers.
   </p>
 </section>
 
-<!-- ── the headline finding ─────────────────────────────────────────────── -->
-<section>
+<section id="records-sec">
+  <p class="lbl">Records</p>
+  <div class="recs" id="records"></div>
+</section>
+
+<section id="paradox-sec">
   <p class="lbl">Boss fight · the paradox</p>
   <div class="win">
     <h2>“Later games are better” is false, and the data says so twice</h2>
     <p class="small dim">Correlation between a game's release lag — years after its
       platform launched — and its canon score. Hover a bar for what it means.</p>
     <div class="meter" id="paradox"></div>
-    <p class="small">Pool all 205 picks and the correlation is strong and positive, which
+    <p class="small colw">Pool all 205 picks and the correlation is strong and positive, which
       looks like proof that developers get better with practice. Centre both columns on
       each system's own mean and it collapses to nothing. The pooled number was never
       about games: platforms whose canon arrives late are platforms that <em>lasted</em>,
@@ -60,23 +72,41 @@
   </div>
 </section>
 
-<!-- ── lag histogram ────────────────────────────────────────────────────── -->
-<section>
+<section id="timing">
   <p class="lbl">Timing</p>
   <h2>The canon is back-loaded</h2>
-  <p class="small dim">Median pick lands <strong data-n="counts.median_lag">3</strong>
-    years into its platform's life. Handhelds invert it — short lives, and the pack-in
-    is often the defining game.</p>
+  <p class="small dim colw">Median pick lands <strong data-n="counts.median_lag">3</strong>
+    years into its platform's life (mean <strong data-n="counts.mean_lag">3.1</strong>).
+    Handhelds invert it — short lives, and the pack-in is often the defining game.</p>
   <figure><div id="lag"></div>
-    <figcaption>Count of the 205 picks by years elapsed since their platform launched.</figcaption>
-  </figure>
+    <figcaption>Count of the 205 picks by years elapsed since their platform launched.</figcaption></figure>
+  <div class="grid-2 pad-t">
+    <figure><div id="lagcat"></div>
+      <figcaption>Arcade boards wait longest; handhelds barely wait at all.</figcaption></figure>
+    <figure><div id="years"></div>
+      <figcaption>Picks by release year — the 1988–1998 decade carries the canon.</figcaption></figure>
+  </div>
 </section>
 
-<!-- ── scatter ──────────────────────────────────────────────────────────── -->
-<section>
+<section id="timeline-sec">
+  <p class="lbl">Timeline</p>
+  <h2>Every system, placed in time</h2>
+  <p class="small dim colw">The tick is the hardware launch; the bar spans that system's
+    earliest to latest pick. Long bars are platforms that kept producing.</p>
+  <figure><div id="timeline"></div>
+    <div class="legend">
+      <span><i style="background:#3987e5"></i>Console</span>
+      <span><i style="background:#d95926"></i>Handheld</span>
+      <span><i style="background:#199e70"></i>Computer, add-on, arcade or ports</span>
+      <span><i style="background:#776fae"></i>hardware launch</span>
+    </div></figure>
+  <details><summary>Show the numbers</summary><div id="timeline-table"></div></details>
+</section>
+
+<section id="map">
   <p class="lbl">World map</p>
   <h2>Selling more hardware helps. Shipping more games helps more.</h2>
-  <p class="small dim">Mean canon score of a platform's five picks against its lifetime
+  <p class="small dim colw">Mean canon score of a platform's five picks against its lifetime
     install base. Regressing on install base <em>and</em> library size reaches an
     adjusted R² of <strong data-n="counts.adj_r2">0.568</strong> — and library size is
     the bigger coefficient (<strong data-n="counts.coef_lib">5.14</strong> points per
@@ -88,61 +118,138 @@
       <span><i style="background:#199e70"></i>Computer, add-on or arcade</span>
       <span><i style="background:#776fae"></i>least-squares fit</span>
     </div>
-    <figcaption>Arcade boards are excluded — a coin-op board has no install base to plot against.</figcaption>
-  </figure>
+    <figcaption>Arcade boards are excluded — a coin-op board has no install base to plot against.</figcaption></figure>
   <details><summary>Show the numbers</summary><div id="scatter-table"></div></details>
 </section>
 
-<!-- ── residuals ────────────────────────────────────────────────────────── -->
-<section>
+<section id="scoreboard">
   <p class="lbl">Scoreboard</p>
   <h2>Who punched above their weight</h2>
-  <p class="small dim">Residual from that model: how much stronger or weaker a platform's
+  <p class="small dim colw">Residual from that model: how much stronger or weaker a platform's
     canon is than its commercial size predicts. The Neo Geo sold 410,000 units and
     produced a top five that scores like a mass-market console.</p>
   <figure><div id="resid"></div>
-    <figcaption>Blue sits above the prediction, red below. Hover for each platform's numbers.</figcaption>
-  </figure>
+    <figcaption>Blue sits above the prediction, red below.</figcaption></figure>
   <details><summary>Show the numbers</summary><div id="resid-table"></div></details>
 </section>
 
-<!-- ── party ────────────────────────────────────────────────────────────── -->
-<section>
-  <p class="lbl">Party</p>
-  <h2>What the canon is made of</h2>
-  <p class="small dim">Genre families across all 205 picks.</p>
-  <div class="win"><div class="party" id="party"></div></div>
+<section id="hardware">
+  <p class="lbl">Install base</p>
+  <h2>The hardware, to scale</h2>
+  <p class="small dim colw">Lifetime units shipped, log scale, for every system with a
+    defined install base. Two of these are estimates: Nintendo reports NES+Famicom as one
+    number and Game Boy+Game Boy Color as another.</p>
+  <figure><div id="units"></div></figure>
 </section>
 
-<!-- ── high scores ──────────────────────────────────────────────────────── -->
-<section>
-  <p class="lbl">High scores</p>
-  <h2>The twelve highest-rated picks</h2>
-  <div class="win win--flat" id="top"></div>
-  <div class="btns">
-    <a class="btn" href="https://github.com/Eeman1113/retrogames/blob/main/TOP5_GAMES.md">Read all 205 picks</a>
-    <a class="btn btn--ghost" href="https://github.com/Eeman1113/retrogames/blob/main/analysis.ipynb">Open the notebook</a>
+<section id="archetypes">
+  <p class="lbl">Archetypes</p>
+  <h2>Hardware features alone recover the categories</h2>
+  <p class="small dim colw">Principal components of six uncurated platform features — units,
+    library size, mean canon, exclusivity rate, mean lag, launch year — with k-means on
+    top. The first two components hold
+    <strong data-n="counts.pca_evr2">0.709</strong> of the variance. No score was used to
+    find the groups, yet they come out nameable.</p>
+  <figure><div id="pca"></div><div class="legend" id="pca-legend"></div>
+    <figcaption>The Neo Geo sits with the home computers: its canon reached homes as
+      arcade conversions, so its exclusivity rate looks nothing like a console's.</figcaption></figure>
+</section>
+
+<section id="genres">
+  <p class="lbl">Party</p>
+  <h2>What the canon is made of</h2>
+  <p class="small dim colw">Genre families across all 205 picks. Hover for each family's
+    mean score and its strongest entry.</p>
+  <div class="win"><div class="party" id="party"></div></div>
+  <figure class="pad-t"><div id="heat"></div>
+    <figcaption>The same picks by decade. Fighting games are a 1990s phenomenon almost
+      exclusively; platformers never stop.</figcaption></figure>
+</section>
+
+<section id="studios">
+  <p class="lbl">Studios</p>
+  <h2>A steep head on a very long tail</h2>
+  <p class="small dim colw"><strong data-n="counts.developers">66</strong> distinct developers.
+    The top five hold <strong data-n="counts.top5_dev_share">42.4</strong>% of the canon,
+    yet <strong data-n="counts.solo_dev_pct">59</strong>% appear exactly once. The
+    Herfindahl index is <strong data-n="counts.hhi">468</strong> — formally
+    <em>unconcentrated</em> — while the Gini is
+    <strong data-n="counts.gini">0.548</strong>. Both are true; quoting either alone misleads.</p>
+  <div class="grid-wide">
+    <div class="win"><div class="party" id="devs"></div></div>
+    <figure><div id="lorenz"></div>
+      <figcaption>Perfect equality would follow the dashed line.</figcaption></figure>
   </div>
 </section>
 
-<!-- ── credits ──────────────────────────────────────────────────────────── -->
-<section>
+<section id="lockin-sec">
+  <p class="lbl">Lock-in</p>
+  <h2>Exclusivity is a business model, not an era</h2>
+  <p class="small dim colw">Share of each maker's picks by how available the game was at
+    release. Arcade hardware existed to be converted; handhelds existed to be moats.</p>
+  <figure><div id="lockin"></div><div class="legend" id="lockin-legend"></div></figure>
+  <div class="grid-2 pad-t">
+    <figure><div id="missing"></div>
+      <figcaption>Only <strong data-n="counts.sales_known_pct">22</strong>% of picks have a
+        published sales figure, and the gap tracks obscurity rather than quality — that is
+        missing-not-at-random data, which the notebook tests instead of dropping.</figcaption></figure>
+    <figure><div id="media"></div>
+      <figcaption>How the 41 systems store their games.</figcaption></figure>
+  </div>
+</section>
+
+<section id="roster-sec">
+  <p class="lbl">All 41 systems</p>
+  <h2>The full roster</h2>
+  <p class="small dim colw">Open any system for its five picks and why each one belongs to
+    that hardware and nowhere else. The number on the right is the system's mean canon score.</p>
+  <div id="roster"></div>
+</section>
+
+<section id="index-sec">
+  <p class="lbl">All 205 games</p>
+  <h2>The index</h2>
+  <p class="small dim colw">Search and filter the whole list. <span id="count" class="count"></span></p>
+  <div class="filters" id="filters"></div>
+  <div class="win win--flat scrollx"><div id="index"></div>
+    <p id="empty" class="small dim" hidden>Nothing matches that. Try a broader filter.</p></div>
+</section>
+
+<section id="high">
+  <p class="lbl">High scores</p>
+  <h2>The twenty highest-rated picks</h2>
+  <div class="win win--flat scrollx" id="top"></div>
+  <div class="btns">
+    <a class="btn" href="https://github.com/Eeman1113/retrogames/blob/main/TOP5_GAMES.md">Read all 205 picks</a>
+    <a class="btn btn--ghost" href="https://github.com/Eeman1113/retrogames/blob/main/analysis.ipynb">Open the notebook</a>
+    <a class="btn btn--ghost" href="https://github.com/Eeman1113/retrogames/tree/main/data">Take the CSVs</a>
+  </div>
+</section>
+
+<section id="tools-sec">
+  <p class="lbl">Tools</p>
+  <h2>The one category with no games in it</h2>
+  <p class="small dim colw">What actually runs everything above.</p>
+  <div class="win win--flat scrollx" id="tools"></div>
+</section>
+
+<section id="credits">
   <p class="lbl">Credits</p>
   <div class="win">
     <h3>How the score works, and what it can't do</h3>
-    <p class="small"><code>canon_score</code> is a curated 0–100 index of how strongly a
+    <p class="small colw"><code>canon_score</code> is a curated 0–100 index of how strongly a
       title sits in the retro canon. It is an editorial construct, not a scraped review
       aggregate, and the notebook treats it as the suspect variable throughout: it re-runs
       the headline result 2,000 times with ±5 points of simulated curator disagreement
       (the sign holds in 100% of draws) and collapses the scale to rank-only as a
       second check.</p>
-    <p class="small">Only <strong data-n="counts.sales_known_pct">22</strong>% of picks
+    <p class="small colw">Only <strong data-n="counts.sales_known_pct">22</strong>% of picks
       have a published sales figure, and the gap is structured — no arcade-only title has
       one, and almost no Japan-only release does. That is missing-not-at-random data, so
       the notebook tests the missingness instead of dropping it. Two hardware figures are
       estimates rather than measurements: Nintendo reports NES+Famicom as one number, and
       Game Boy+Game Boy Color as another.</p>
-    <p class="small">These are the top five <em>per system</em>, so nothing here describes
+    <p class="small colw">These are the top five <em>per system</em>, so nothing here describes
       the average game on a platform — only its ceiling.</p>
   </div>
 </section>

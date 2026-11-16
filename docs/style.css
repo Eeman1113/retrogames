@@ -190,6 +190,90 @@ footer a { color: var(--ink-2); }
 }
 @media (prefers-reduced-motion: reduce) { #tip { transition: none; } }
 
+/* ── table of contents ─────────────────────────────────────────────────── */
+.toc {
+  display: flex; flex-wrap: wrap; gap: 0 20px;
+  margin: 40px auto 0; padding-bottom: 20px;
+  border-bottom: var(--px) solid var(--panel-2);
+  font-size: 13px;
+}
+.toc a { color: var(--ink-2); text-decoration: none; padding: 4px 0; }
+.toc a:hover { color: var(--d2); text-decoration: underline; text-underline-offset: 4px; }
+
+.colw { max-width: 68ch; }
+.pad-t { margin-top: 28px; }
+.grid-wide { display: grid; grid-template-columns: 1.25fr 1fr; gap: 20px; align-items: start; }
+@media (max-width: 860px) { .grid-wide { grid-template-columns: 1fr; } }
+.scrollx { overflow-x: auto; }
+
+/* ── records ───────────────────────────────────────────────────────────── */
+.recs { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; }
+.rec { display: grid; grid-template-columns: 40px 1fr; gap: 14px; align-items: start; padding: 18px 16px; }
+.rec-k { font-size: 11px; color: var(--d2); display: block; margin-bottom: 6px; font-family: var(--display); }
+.rec-v { font-size: 16px; font-weight: 500; display: block; line-height: 1.35; }
+.rec-d { font-size: 13px; color: var(--ink-2); display: block; margin-top: 4px; }
+
+/* ── studios list reuses the party row with a leading count ────────────── */
+.dev-n {
+  font-family: var(--display); font-size: 10px; color: var(--ink);
+  background: var(--panel-2); padding: 7px 0; text-align: center;
+}
+
+/* ── roster ────────────────────────────────────────────────────────────── */
+.sys {
+  background: var(--panel); border: var(--px) solid var(--panel-2);
+  margin-bottom: 8px; padding: 0;
+}
+.sys[open] { border-color: var(--edge); }
+.sys > summary {
+  display: grid; grid-template-columns: minmax(130px, 1.1fr) 2fr 54px;
+  gap: 14px; align-items: baseline; padding: 14px 16px; font-size: 14px; color: var(--ink);
+}
+.sys > summary { list-style: none; }
+.sys > summary::-webkit-details-marker { display: none; }
+.sys > summary::marker { content: ""; }
+.sys > summary:hover { background: var(--panel-2); }
+.sys-name { font-weight: 500; }
+.sys-meta { color: var(--ink-2); font-size: 13px; }
+.sys-canon { font-family: var(--display); font-size: 11px; color: var(--d1); text-align: right; }
+.sys-note { margin: 0 16px 10px; }
+.picks { list-style: none; margin: 0; padding: 0 16px 16px; display: grid; gap: 10px; }
+.picks li {
+  display: grid; grid-template-columns: 28px 1fr 130px 34px; gap: 12px;
+  align-items: start; padding-top: 10px; border-top: 2px solid var(--panel-2);
+}
+.picks .party-n { align-self: center; }
+.pick-note { display: block; color: var(--ink-2); margin-top: 3px; }
+.pill {
+  font-size: 11px; padding: 3px 8px; text-align: center; align-self: center;
+  background: var(--panel-2); color: var(--ink-2); white-space: nowrap;
+}
+.pill--exclusive { color: var(--d1); }
+.pill--regional { color: var(--d2); }
+.pill--arcadeonly { color: var(--d3); }
+
+/* ── explorer ──────────────────────────────────────────────────────────── */
+.filters { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+.filters input, .filters select {
+  font-family: var(--body); font-size: 14px; color: var(--ink);
+  background: var(--panel); border: var(--px) solid var(--panel-2);
+  padding: 11px 12px;
+}
+.filters input { flex: 1 1 260px; }
+.filters input::placeholder { color: var(--ink-3); }
+.filters input:focus, .filters select:focus { border-color: var(--d1); outline: none; }
+.btn--sm { font-size: 10px; padding: 10px 14px; border-width: 2px; }
+.count { font-family: var(--display); font-size: 10px; color: var(--d2); margin-left: 6px; }
+/* 205 rows would otherwise own the page; cap it and let the table scroll */
+#index { max-height: 72vh; overflow-y: auto; }
+#index table { font-size: 13.5px; }
+#index thead th {
+  position: sticky; top: 0; background: var(--panel-2);
+  box-shadow: 0 2px 0 var(--panel);
+}
+#index td:nth-child(2) { font-weight: 500; }
+#index tbody tr:hover { background: var(--panel-2); }
+
 /* The screen holds a fixed 3:2 aspect like the real hardware, which clips its own
    content once the column gets narrow. Below 760px the screen grows to fit instead,
    and the controls shrink rather than stealing width from it. */
@@ -206,4 +290,9 @@ footer a { color: var(--ink-2); }
   /* five sprites at 60px overflow a narrow screen; scale the row to fit */
   .sprite-row { gap: 10px; }
   .sprite-row .sprite { width: 42px; height: 42px; }
+  .sys > summary { grid-template-columns: 1fr 46px; }
+  .sys-meta { grid-column: 1 / -1; }
+  .picks li { grid-template-columns: 24px 1fr 34px; }
+  .pill { grid-column: 2 / -1; justify-self: start; }
+  .toc { gap: 0 14px; font-size: 12px; }
 }
